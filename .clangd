@@ -1,0 +1,12 @@
+CompileFlags:
+  Add:
+    - -ffreestanding
+    - -nostdlib
+    - -Wno-main
+
+---
+If:
+  PathMatch: user/.*\.c
+CompileFlags:
+  Add:
+    - -I..

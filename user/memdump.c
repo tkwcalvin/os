@@ -57,9 +57,74 @@ main(int argc, char *argv[])
   exit(0);
 }
 
+
+static char digits[] = "0123456789ABCDEF";
+
+static void
+putc(int fd, char c)
+{
+  write(fd, &c, 1);
+}
+
+static void
+printint(int fd, long long xx, int base, int sgn)
+{
+  char buf[20];
+  int i, neg;
+  uint x;
+
+  neg = 0;
+  if(sgn && xx < 0){
+    neg = 1;
+    x = -xx;
+  } else {
+    x = xx;
+  }
+
+  i = 0;
+  do{
+    buf[i++] = digits[x % base];
+  }while((x /= base) != 0);
+  if(neg)
+    buf[i++] = '-';
+
+  while(--i >= 0)
+    putc(fd, buf[i]);
+}
+
 void
 memdump(char *fmt, char *data)
 {
+
   // Your code here.
+  void *p = (void *)data;
+  for (;*fmt!='\0';fmt++){
+    if (*fmt == 'i'){
+      printf("%d\n", *(int *)p);
+      p += sizeof(int);
+    }else if (*fmt == 'p'){
+      printint(1, *(uint64*)p, 16, 1);
+      printf("\n");
+      p += sizeof(uint64);
+    }
+    else if (*fmt == 'c'){
+      printf("%c\n", *(char *)p);
+      p += sizeof(char);
+    }
+    else if (*fmt == 's'){
+      printf("%s\n", *(char **)p);
+      p += sizeof(char *);
+    }
+    else if (*fmt == 'S'){
+      printf("%s\n", (char *)p);
+      p += strlen((char *)p) + 1;
+    }
+    else if (*fmt == 'h'){
+      printint(1, *(short *)p, 10, 1);
+      printf("\n");
+      p += sizeof(short);
+    }
+    
+  }
 
 }
