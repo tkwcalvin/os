@@ -26,4 +26,9 @@ barrier
 *.dSYM
 *.pcap
 TAGS
+*.bk
+.clangd
+*.txt
+.vscode
+
 

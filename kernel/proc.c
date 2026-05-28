@@ -276,6 +276,9 @@ kfork(void)
   // copy saved user registers.
   *(np->trapframe) = *(p->trapframe);
 
+  // copy mask from parent to child
+  np->mask = p->mask;
+
   // Cause fork to return 0 in the child.
   np->trapframe->a0 = 0;
 
@@ -685,3 +688,26 @@ procdump(void)
     printf("\n");
   }
 }
+
+
+uint64 
+kinterpose(int mask, char *path)
+{
+  //struct proc *p = myproc();
+  struct proc *p = myproc();
+  acquire(&p->lock);
+  p->mask = mask;
+  safestrcpy(p->path, path, sizeof(p->path));
+  release(&p->lock);
+  return 0;
+}
+
+
+// void
+// kattack(void)
+// {
+//   struct proc *p = myproc();
+//   char *c = sbrk(1);
+
+
+// }
